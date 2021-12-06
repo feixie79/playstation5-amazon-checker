@@ -8,7 +8,7 @@ const DETECTION_STRING_NOT_AVAILABLE = "Derzeit nicht verfügbar."; //OTHER COUN
 const AVAILABLE_MESSAGE = "Auf Lager.";
 const BROWSER = "google chrome";
 const Interval = 61
-const URLs = ["https://www.amazon.de/dp/B08H93ZRK9/", "https://www.amazon.de/dp/B08H98GVK8"]
+const URLs = ["https://www.amazon.de/dp/B08H93ZRK9/", "https://www.amazon.de/dp/B08H98GVK8", "https://www.amazon.de/Microsoft-RRS-00009-Xbox-Series-512GB/dp/B087VM5XC6/"]
 
 let loop;
 
@@ -45,7 +45,7 @@ async function scrapProduct(uri) {
 
     if (availableText === AVAILABLE_MESSAGE) {
       say.speak(title + AVAILABLE_MESSAGE);
-      open(uri, { app: BROWSER });
+      open(uri);
       clearInterval(loop);
     } else if (availableText === DETECTION_STRING_NOT_AVAILABLE) {
       console.log(colors.yellow(availableText));
