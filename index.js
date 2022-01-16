@@ -8,7 +8,11 @@ const DETECTION_STRING_NOT_AVAILABLE = "Derzeit nicht verfügbar."; //OTHER COUN
 const AVAILABLE_MESSAGE = "Auf Lager.";
 const BROWSER = "google chrome";
 const Interval = 61
-const URLs = ["https://www.amazon.de/dp/B08H93ZRK9/", "https://www.amazon.de/dp/B08H98GVK8", "https://www.amazon.de/Microsoft-RRS-00009-Xbox-Series-512GB/dp/B087VM5XC6/"]
+const URLs = [
+    "https://www.amazon.de/dp/B08H93ZRK9",
+    "https://www.amazon.de/dp/B08H98GVK8",
+    "https://www.amazon.de/dp/B09QG2JZYS",
+  ]
 
 let loop;
 
@@ -38,28 +42,27 @@ async function scrapProduct(uri) {
 
     const $ = cheerio.load(product_page);
     const title = $("#productTitle").text().trim();
-    const price = $("#priceblock_ourprice").text().trim();
     const availableText = $(AVAILABLE_SELECTOR).text().trim();
+
     const timestamp = new Date(Date.now())
     console.log(`Checking for ${title} at ${timestamp}`);
 
     if (availableText === AVAILABLE_MESSAGE) {
       say.speak(title + AVAILABLE_MESSAGE);
-      open(uri);
+      open(uri, { app: BROWSER });
       clearInterval(loop);
-    } else if (availableText === DETECTION_STRING_NOT_AVAILABLE) {
+    } else if (availableText === DETECTION_STRING_NOT_AVAILABLE)
       console.log(colors.yellow(availableText));
-    }
+    else if (!availableText)
+      console.log(colors.red("no available text"));
   } catch (error) {
-    console.error(`Error while scraping ${uri}`);
     if (error.response && error.response.data &&
        error.response.data.includes(
         "To discuss automated access to Amazon data please contact"
       )
     ) {
       console.log(colors.red("Amazon is mad"));
-    }
-    
+    } else console.error(`Error while scraping ${uri}`, error);
   } finally {
     console.log(colors.zebra(`------------`));
   }
